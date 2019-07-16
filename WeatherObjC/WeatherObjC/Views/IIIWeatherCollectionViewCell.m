@@ -15,9 +15,10 @@
 {
     if (self.weather) {
 
-        self.temperatureLabel.text = [NSString stringWithFormat:@"%@ %@ degrees", self.weather.name, self.weather.temp];
+        self.temperatureLabel.text = [NSString stringWithFormat:@"%@ degrees",  self.weather.temp];
         self.weatherImageView.image = self.weather.icon;
     }
+    
 }
 
 @end

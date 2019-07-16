@@ -44,6 +44,7 @@
     [self.weatherController searchForWeatherWithZipcode:searchBar.text completion:^(NSError *error) {
 
         dispatch_async(dispatch_get_main_queue(), ^{
+            
             [[self collectionView] reloadData];
         });
 
@@ -58,7 +59,7 @@
     IIIWeatherCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"WeatherCell" forIndexPath:indexPath];
 
     IIIWeather *weather = [self.weatherController forecasts][indexPath.row];
-
+    _cityNameLabel.text = weather.name;
     cell.weather = weather;
     [cell updateViews];
 
