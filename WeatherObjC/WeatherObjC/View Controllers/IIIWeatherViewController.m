@@ -7,30 +7,62 @@
 //
 
 #import "IIIWeatherViewController.h"
+#import "IIIWeatherCollectionViewCell.h"
+#import "IIIWeatherController.h"
+#import "IIIWeather.h"
 
-@interface IIIWeatherViewController ()
+@interface IIIWeatherViewController()
 
-@property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
+@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UILabel *cityNameLabel;
-@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 
 @end
 
 @implementation IIIWeatherViewController
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+
+        _weatherController = [[IIIWeatherController alloc] init];
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    self.searchBar.delegate = self;
+    self.collectionView.delegate = self;
+    self.collectionView.dataSource = self;
 }
 
-/*
-#pragma mark - Navigation
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [self.weatherController searchForWeatherWithZipcode:searchBar.text completion:^(NSError *error) {
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self collectionView] reloadData];
+        });
+
+    }];
 }
-*/
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return [[self.weatherController forecasts] count];
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    IIIWeatherCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"WeatherCell" forIndexPath:indexPath];
+
+    IIIWeather *weather = [self.weatherController forecasts][indexPath.row];
+
+    cell.weather = weather;
+    [cell updateViews];
+
+    return cell;
+}
 
 @end

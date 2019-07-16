@@ -7,15 +7,17 @@
 //
 
 #import "IIIWeatherCollectionViewCell.h"
-
-@interface IIIWeatherCollectionViewCell()
-
-@property (weak, nonatomic) IBOutlet UIImageView *weatherImageView;
-@property (weak, nonatomic) IBOutlet UILabel *temperatureLabel;
-
-
-@end
+#import "IIIWeather.h"
 
 @implementation IIIWeatherCollectionViewCell
+
+- (void)updateViews
+{
+    if (self.weather) {
+
+        self.temperatureLabel.text = [NSString stringWithFormat:@"%@ %@ degrees", self.weather.name, self.weather.temp];
+        self.weatherImageView.image = self.weather.icon;
+    }
+}
 
 @end
